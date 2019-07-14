@@ -4,7 +4,7 @@ const Err = require('../utils/error');
 const { JWT_SECRETKEY } = require('../constant/index');
 const client = require('../config/redis');
 
-const auth = async (req, res, next) => {
+module.exports = async (req, res, next) => {
     try {
         const token = req.header('Authorization');
 		const decoded = await jwt.verify(token, JWT_SECRETKEY);
@@ -24,6 +24,4 @@ const auth = async (req, res, next) => {
     } catch (err) {
         next(err)
     }
-}
-
-module.exports = auth;
+};

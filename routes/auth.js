@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../models');
 const client = require('../config/redis');
-const auth = require('../midleware/auth');
+const auth = require('../middleware/auth');
 const Validator = require('../utils/validator');
 const Result = require('../utils/result');
 const Err = require('../utils/error');
@@ -44,7 +44,6 @@ router.post('/logout',auth, async (req, res, next) => {
 
 const tryLogin = async (loginUser, password, res) => {
 	if (!loginUser) new Err('user not exist').BadRequest(res);
-	// if (!loginUser) throw new Error('asdasdadasdas');
 
 	const match = await bcrypt.compare(password, loginUser.password);
 	if (!match) new Err('wrong password').BadRequest(res)

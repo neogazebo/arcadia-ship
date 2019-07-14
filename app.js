@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const { errorLogger, accessLogger } = require('./midleware/logs')
+const { errorLogger, accessLogger } = require('./middleware/logs')
 
 const app = express();
 
@@ -12,7 +12,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(accessLogger)
 require('./routes/index')(app);
 app.use(errorLogger);
-app.use(require('./midleware/error_handling'))
+app.use(require('./middleware/error_handling'))
 
 
 module.exports = app;

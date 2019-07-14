@@ -1,0 +1,4 @@
+exports.AUTH = {
+    EXPIRED_REDIS_TIME: 28800,
+    EXPIRED_JWT_TOKEN: '8h'
+}

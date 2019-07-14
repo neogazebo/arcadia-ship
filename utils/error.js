@@ -1,27 +1,31 @@
-const { BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, UNAUTHORIZED } = require('../constant/error')
+const { BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, UNAUTHORIZED, NOT_FOUND } = require('../constant/http_status')
 
 const error = function(message) {
-    this.err = new Error(message)
-    Object.assign(this.err, { message });
+    this.err = new Error(message);
 }
 
-error.prototype.BadRequest = function() {
-    Object.assign(this.err, { status: BAD_REQUEST });
+error.prototype.BadRequest = function (res) {
+    res.status(BAD_REQUEST);
     throw this.err;
 }
 
-error.prototype.Forbidden = function() {
-    Object.assign(this.err, { status: FORBIDDEN });
+error.prototype.Forbidden = function (res) {
+    res.status(FORBIDDEN);
     throw this.err;
 }
 
-error.prototype.Unauthorized = function() {
-    Object.assign(this.err, { status: UNAUTHORIZED });
+error.prototype.Unauthorized = function (res) {
+    res.status(UNAUTHORIZED);
     throw this.err;
 }
 
-error.prototype.InternasServerError = function() {
-    Object.assign(this.err, { status: INTERNAL_SERVER_ERROR });
+error.prototype.InternalServerError = function (res) {
+    res.status(INTERNAL_SERVER_ERROR);
+    throw this.err;
+}
+
+error.prototype.NotFound = function (res) {
+    res.status(NOT_FOUND);
     throw this.err;
 }
 

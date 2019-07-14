@@ -2,12 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const { errorLogger, accessLogger } = require('./midleware/logs')
-// const client = require('./config/redis');
-
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const authRouter = require('./routes/auth');
-const { INTERNAL_SERVER_ERROR } = require('./constant/error')
+const { INTERNAL_SERVER_ERROR, SUCCESS } = require('./constant/http_status')
 
 const app = express();
 
@@ -18,20 +13,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(accessLogger)
 
-// client.on('connect', () => {
-//     console.log(`connected to redis`);
-// });
-// client.on('error', err => {
-//     console.log(`Error: ${err}`);
-// });
+require('./routes/index')(app);
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/auth', authRouter);
 
 app.use(errorLogger);
-app.use((err, req, res, next) => {
-	res.status(INTERNAL_SERVER_ERROR||err.status).send({ message: err.message })
+app.use((err, _req, res, next) => {
+    if (res.statusCode === SUCCESS || !res.statusCode) res.status(INTERNAL_SERVER_ERROR);
+	res.send({ message: err.toString() })
 	next(err)
 })
 

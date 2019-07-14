@@ -1,7 +1,7 @@
 'use strict';
 
 const Joi = require('@hapi/joi');
-const error = require('../utils/error');
+const Err = require('../utils/error');
 
 const REGISTER_SCHEMA = Joi.object().keys({
     username: Joi.string().max(100).required(),
@@ -18,11 +18,11 @@ const SCHEMA = {
     AuthLogin: LOGIN_SCHEMA
 };
 
-const validate = async (payload, schema) => {
+const validate = async (payload, schema, response) => {
     try {
         return await Joi.validate(payload, SCHEMA[schema]);
     } catch (err) {
-        error.throw(err.message.replace(/"/g, ''), 400);
+        new Err(err.message.replace(/"/g, '')).BadRequest(response)
     }
 };
 

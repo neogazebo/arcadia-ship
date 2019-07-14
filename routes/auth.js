@@ -13,7 +13,7 @@ const { AUTH } = require('../constant/auth');
 
 router.post('/register', async (req, res, next) => {
 	try {
-		const { username, password } = await Validator.validate(req.body, 'AuthRegister');
+		const { username, password } = await Validator.validate(req.body, 'AuthRegister', res);
 		const hashedPassword = await bcrypt.hash(password, SALT_ROUND);
 		db.User.create({ email: username, password: hashedPassword });
 		res.json(new Result('success'))
@@ -24,12 +24,12 @@ router.post('/register', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
 	try {
-		const { username, password } = await Validator.validate(req.body, 'AuthLogin');
+		const { username, password } = await Validator.validate(req.body, 'AuthLogin', res);
 
 		const loginUser = await db.User.findOne({
 			where: { email: username }
 		})
-		await tryLogin(loginUser, password);
+		await tryLogin(loginUser, password, res);
 		const token = generateToken(loginUser);
 		res.json(new Result('success', { token }));
 	} catch (err) {
@@ -42,11 +42,12 @@ router.post('/logout',auth, async (req, res, next) => {
 	res.json(new Result('logout success'));
 })
 
-const tryLogin = async (loginUser, password) => {
-	if (!loginUser) new Err('user not exist').BadRequest();
+const tryLogin = async (loginUser, password, res) => {
+	if (!loginUser) new Err('user not exist').BadRequest(res);
+	// if (!loginUser) throw new Error('asdasdadasdas');
 
 	const match = await bcrypt.compare(password, loginUser.password);
-	if (!match) new Err('wrong password').BadRequest()
+	if (!match) new Err('wrong password').BadRequest(res)
 }
 
 const generateToken = (loginUser) => {

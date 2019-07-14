@@ -2,6 +2,8 @@ const winston = require('winston');
 const expressWinston = require('express-winston');
 const appRoot = require('app-root-path');
 
+expressWinston.requestWhitelist.push('body');
+expressWinston.responseWhitelist.push('body');
 exports.accessLogger = expressWinston.logger({
     transports: [
       new winston.transports.Console({

@@ -1,9 +1,17 @@
-const express = require('express');
-const router = express.Router();
+const usersRouter = require('./users');
+const authRouter = require('./auth');
+const Err = require('../utils/error');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+module.exports = (app) => {
+	app.get('/', (_req, res, _next) => {
+		res.render('index', { title: 'Express' });
+	});
 
-module.exports = router;
+	app.use('/users', usersRouter);
+	app.use('/auth', authRouter);
+
+	// Catch all
+	app.use('*', function (req, res, next) {
+		new Err(`Path ${req.originalUrl} does not exist`).NotFound(res)
+	});
+};
